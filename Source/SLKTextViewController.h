@@ -391,6 +391,17 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)didCancelTextEditing:(id)sender NS_REQUIRES_SUPER;
 
+#pragma mark - Preview (for example link previwew)
+
+//
+@property (nonatomic, strong, readonly) UIView *previewView;
+
+//
+- (CGFloat)heightForPreviewView;
+
+//
+- (void)registerPreviewView:(UIView *)previewView;
+- (void)showPreviewView:(BOOL)showPreview;
 
 #pragma mark - Text Auto-Completion
 ///------------------------------------------------

@@ -49,6 +49,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 @property (nonatomic, strong) NSLayoutConstraint *typingIndicatorViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *autoCompletionViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *keyboardHC;
+@property (nonatomic, strong) NSLayoutConstraint *previewViewHC;
 
 // YES if the user is moving the keyboard with a gesture
 @property (nonatomic, assign, getter = isMovingKeyboard) BOOL movingKeyboard;
@@ -78,6 +79,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 @synthesize autoCompleting = _autoCompleting;
 @synthesize scrollViewProxy = _scrollViewProxy;
 @synthesize presentedInPopover = _presentedInPopover;
+@synthesize previewView = _previewView;
 
 #pragma mark - Initializer
 
@@ -179,6 +181,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super viewDidLoad];
     
     [self.view addSubview:self.scrollViewProxy];
+    [self.view addSubview:self.previewView];
     [self.view addSubview:self.autoCompletionView];
     [self.view addSubview:self.typingIndicatorProxyView];
     [self.view addSubview:self.textInputbar];
@@ -277,6 +280,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         _collectionView.delegate = self;
     }
     return _collectionView;
+}
+
+- (UIView *)previewView {
+    if (!_previewView) {
+        _previewView = [[UIView alloc] initWithFrame:CGRectZero];
+        _previewView.translatesAutoresizingMaskIntoConstraints = NO;
+        _previewView.backgroundColor = [UIColor redColor];
+    }
+    
+    return _previewView;
 }
 
 - (UITableView *)autoCompletionView
@@ -436,6 +449,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     scrollViewHeight -= self.textInputbarHC.constant;
     scrollViewHeight -= self.autoCompletionViewHC.constant;
     scrollViewHeight -= self.typingIndicatorViewHC.constant;
+    scrollViewHeight -= self.previewViewHC.constant;
     
     if (scrollViewHeight < 0) return 0;
     else return scrollViewHeight;
@@ -509,7 +523,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     return YES;
 }
-
 
 #pragma mark - Setters
 
@@ -796,6 +809,54 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     return YES;
+}
+
+- (CGFloat)heightForPreviewView {
+    return 0.0f;
+}
+
+- (void)showPreviewView:(BOOL)showPreview {
+
+    //
+    CGFloat viewHeight = showPreview ? [self heightForPreviewView] : 0.0;
+    
+    if (self.previewViewHC.constant == viewHeight) {
+        return;
+    }
+    
+    //
+    self.previewViewHC.constant = viewHeight;
+    
+    //
+    [self.view slk_animateLayoutIfNeededWithBounce:self.bounces
+                                           options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionAllowUserInteraction
+                                        animations:NULL];
+    
+    // scroll
+    if (self.isInverted) {
+        [self.scrollViewProxy slk_scrollToTopAnimated:YES];
+
+    } else {
+        [self.scrollViewProxy slk_scrollToBottomAnimated:YES];
+    }
+}
+
+- (void)registerPreviewView:(UIView *)previewView {
+    
+    // remove old subviews
+    for (UIView *subview in self.previewView.subviews) {
+        [subview removeFromSuperview];
+    }
+    
+    // add new one
+    [self.previewView addSubview:previewView];
+    
+    //
+    NSDictionary *views = @{@"preview" : previewView};
+    
+    // add constrains
+    [self.previewView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[preview]|" options:0 metrics:nil views:views]];
+    [self.previewView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[preview]|" options:0 metrics:nil views:views]];
 }
 
 - (CGFloat)heightForAutoCompletionView
@@ -2153,18 +2214,21 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)slk_setupViewConstraints
 {
     NSDictionary *views = @{@"scrollView": self.scrollViewProxy,
+                            @"preview" : self.previewView,
                             @"autoCompletionView": self.autoCompletionView,
                             @"typingIndicatorView": self.typingIndicatorProxyView,
                             @"textInputbar": self.textInputbar,
                             };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(0)]-0-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][preview(0@750)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(0)]-0-|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[preview]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[autoCompletionView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[typingIndicatorView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textInputbar]|" options:0 metrics:nil views:views]];
     
     self.scrollViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.scrollViewProxy secondItem:nil];
+    self.previewViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.previewView secondItem:nil];
     self.autoCompletionViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.autoCompletionView secondItem:nil];
     self.typingIndicatorViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.typingIndicatorProxyView secondItem:nil];
     self.textInputbarHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.textInputbar secondItem:nil];
