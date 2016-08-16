@@ -286,7 +286,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (!_previewView) {
         _previewView = [[UIView alloc] initWithFrame:CGRectZero];
         _previewView.translatesAutoresizingMaskIntoConstraints = NO;
-        _previewView.backgroundColor = [UIColor redColor];
+        _previewView.backgroundColor = [UIColor whiteColor];
     }
     
     return _previewView;
