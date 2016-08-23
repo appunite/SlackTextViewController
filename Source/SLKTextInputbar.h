@@ -87,8 +87,8 @@ typedef NS_ENUM(NSUInteger, SLKCounterPosition) {
 /// @name Text Editing
 ///------------------------------------------------
 
-/** The view displayed on top if the text input bar, containing the button outlets, when editing is enabled. */
-@property (nonatomic, strong) UIView *editorContentView;
+/** The view displayed on top */
+@property (nonatomic, strong) UIView *optionsContentView;
 
 /** The title label displayed in the middle of the accessoryView. */
 @property (nonatomic, strong) UILabel *editorTitle;
@@ -100,7 +100,10 @@ typedef NS_ENUM(NSUInteger, SLKCounterPosition) {
 @property (nonatomic, strong) UIButton *editorRightButton;
 
 /** The accessory view's maximum height. Default is 38 pts. */
-@property (nonatomic, assign) CGFloat editorContentViewHeight;
+@property (nonatomic, assign) CGFloat optionsViewHeight;
+
+//
+@property (nonatomic, assign) BOOL showOptionsView;
 
 /** A Boolean value indicating whether the control is in edit mode. */
 @property (nonatomic, getter = isEditing) BOOL editing;
