@@ -2247,6 +2247,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super updateViewConstraints];
 }
 
+- (CGFloat)keyboardHeight {
+    return self.keyboardHC.constant;
+}
 
 #pragma mark - External Keyboard Support
 
