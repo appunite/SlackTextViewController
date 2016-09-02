@@ -1459,9 +1459,14 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_didShowOrHideKeyboard:(NSNotification *)notification
 {
-    // Skips if the view isn't visible
-    if (!self.view.window) {
-        return;
+    SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
+    if (!self.isViewVisible) {
+        if (status == SLKKeyboardStatusDidHide && self.keyboardStatus == SLKKeyboardStatusWillHide) {
+            // Even if the view isn't visible anymore, let's still continue to update all states.
+        }
+        else {
+            return;
+        }
     }
     
     // Skips if it is presented inside of a popover
@@ -1473,8 +1478,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (self.textView.didNotResignFirstResponder) {
         return;
     }
-    
-    SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
     
     // Skips if it's the current status
     if (self.keyboardStatus == status) {
