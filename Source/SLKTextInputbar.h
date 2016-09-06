@@ -35,6 +35,9 @@ typedef NS_ENUM(NSUInteger, SLKCounterPosition) {
 /** @name A custom tool bar encapsulating messaging controls. */
 @interface SLKTextInputbar : UIToolbar
 
+@property (nonatomic, strong) UIView *contentView;;
+- (void)hideContentView:(BOOL)hide;
+
 /** A weak reference to the core view controller. */
 @property (nonatomic, weak) SLKTextViewController *controller;
 

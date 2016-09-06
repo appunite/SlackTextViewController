@@ -662,6 +662,36 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // No implementation here. Meant to be overriden in subclass.
 }
 
+- (void)hideTextInputBar:(BOOL)hide completion:(void(^)(BOOL finish))completion {
+    [self.textInputbar hideContentView:hide];
+
+    CGFloat inputbarHeight = self.textInputbar.appropriateHeight;
+    
+    self.textInputbar.rightButton.enabled = [self canPressRightButton];
+    self.textInputbar.editorRightButton.enabled = [self canPressRightButton];
+    
+    if (inputbarHeight != self.textInputbarHC.constant)
+    {
+        self.textInputbarHC.constant = inputbarHeight;
+        self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
+
+        [UIView animateWithDuration:0.65
+                              delay:0.0
+             usingSpringWithDamping:1.0
+              initialSpringVelocity:0.7
+                            options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+                         animations:^{
+                             [self.view layoutIfNeeded];
+                             if (completion) {
+                                 completion(YES);
+                             }
+                         }
+                         completion:nil];
+    }
+
+    
+}
+
 - (void)textDidUpdate:(BOOL)animated
 {
     if (self.textInputbarHidden) {
@@ -1421,7 +1451,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Updates the height constraints' constants
     self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromNotification:notification];
     self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
-    
     
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
