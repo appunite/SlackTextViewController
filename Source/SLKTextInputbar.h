@@ -36,7 +36,6 @@ typedef NS_ENUM(NSUInteger, SLKCounterPosition) {
 @interface SLKTextInputbar : UIToolbar
 
 @property (nonatomic, strong) UIView *contentView;;
-- (void)hideContentView:(BOOL)hide;
 
 /** A weak reference to the core view controller. */
 @property (nonatomic, weak) SLKTextViewController *controller;

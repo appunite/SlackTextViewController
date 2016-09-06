@@ -105,10 +105,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self slk_registerTo:self.rightButton.titleLabel forSelector:@selector(font)];
 }
 
-- (void)hideContentView:(BOOL)hide {
-    self.contentViewHC.priority = hide ? 900 : 240;
-}
-
 #pragma mark - UIView Overrides
 
 - (void)layoutIfNeeded
@@ -619,11 +615,11 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
                               };
     
 
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[textView]-(right)-[rightButton(0)]-(10)-|" options:0 metrics:metrics views:innerViews]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[textView]-(right)-[rightButton(0@999)]-(10)-|" options:0 metrics:metrics views:innerViews]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[rightButton]-0-|" options:0 metrics:metrics views:innerViews]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[textView(0@999)]-0-|" options:0 metrics:metrics views:innerViews]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[optionsContentView(0)]-(<=top)-[contentView(0@240)]-(bottom)-|" options:0 metrics:metrics views:mainViews]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(<=top)-[contentView(0@240)]-(bottom)-[optionsContentView(0)]-0-|" options:0 metrics:metrics views:mainViews]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[optionsContentView]|" options:0 metrics:metrics views:mainViews]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|" options:0 metrics:metrics views:mainViews]];
     

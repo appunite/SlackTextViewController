@@ -394,8 +394,6 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)didCancelTextEditing:(id)sender NS_REQUIRES_SUPER;
 
-//
-- (void)hideTextInputBar:(BOOL)hide completion:(void(^)(BOOL finish))completion;
 #pragma mark - Preview (for example link previwew)
 
 //
