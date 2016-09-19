@@ -588,9 +588,10 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 - (void)slk_setupViewConstraints
 {
-    [self.rightButton sizeToFit];
     
-    CGFloat rightVerMargin = (self.intrinsicContentSize.height - CGRectGetHeight(self.rightButton.frame)) / 2.0;
+    // clear constrantis before adding new one
+    [self removeConstraints:self.constraints];
+    [self.contentView removeConstraints:self.contentView.constraints];
     
     NSDictionary *mainViews = @{
         @"contentView" : self.contentView,
@@ -598,21 +599,16 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     };
 
     NSDictionary *innerViews = @{
-         @"textView" : self.textView,
-         @"rightButton" : self.rightButton
+        @"textView" : self.textView,
+        @"rightButton" : self.rightButton
     };
     
-    NSDictionary *views = @{@"textView": self.textView,
-                            @"rightButton": self.rightButton,
-                            @"contentView": self.optionsContentView,
-                            };
-    
-    NSDictionary *metrics = @{@"top" : @(self.contentInset.top),
-                              @"bottom" : @(self.contentInset.bottom),
-                              @"left" : @(self.contentInset.left),
-                              @"right" : @(self.contentInset.right),
-                              @"rightVerMargin" : @(rightVerMargin),
-                              };
+    NSDictionary *metrics = @{
+        @"top" : @(self.contentInset.top),
+        @"bottom" : @(self.contentInset.bottom),
+        @"left" : @(self.contentInset.left),
+        @"right" : @(self.contentInset.right),
+    };
     
 
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[textView]-(right)-[rightButton(0@999)]-(10)-|" options:0 metrics:metrics views:innerViews]];
