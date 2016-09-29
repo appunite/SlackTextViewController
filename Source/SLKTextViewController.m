@@ -811,6 +811,21 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     return YES;
 }
 
+- (void)hideTextInputView:(BOOL)hide animated:(BOOL)animated {
+    NSUInteger priority = hide ? 900 : 240;
+    
+    if (self.textInputbar.contentViewHC.priority == priority) {
+        return;
+    }
+    
+    //
+    self.textInputbar.contentViewHC.priority = priority;
+    self.textInputbar.contentViewHC.constant = 0;
+    
+    //
+    [self textDidUpdate:animated];
+}
+
 - (CGFloat)heightForPreviewView {
     return 0.0f;
 }

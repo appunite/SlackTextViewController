@@ -406,6 +406,9 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 - (void)registerPreviewView:(UIView *)previewView;
 - (void)showPreviewView:(BOOL)showPreview;
 
+// hide text input view
+- (void)hideTextInputView:(BOOL)hide animated:(BOOL)animated;
+
 #pragma mark - Text Auto-Completion
 ///------------------------------------------------
 /// @name Text Auto-Completion
