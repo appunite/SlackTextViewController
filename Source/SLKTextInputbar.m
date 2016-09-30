@@ -599,6 +599,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     };
 
     NSDictionary *innerViews = @{
+        @"charCountLabel": self.charCountLabel,
         @"textView" : self.textView,
         @"rightButton" : self.rightButton
     };
@@ -614,6 +615,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[textView]-(right)-[rightButton(0@999)]-(10)-|" options:0 metrics:metrics views:innerViews]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[rightButton]-0-|" options:0 metrics:metrics views:innerViews]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[textView(0@999)]-0-|" options:0 metrics:metrics views:innerViews]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left@250)-[charCountLabel(<=50@1000)]-(right@750)-|" options:0 metrics:metrics views:innerViews]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(<=top)-[contentView(0@240)]-(bottom)-[optionsContentView(0)]-0-|" options:0 metrics:metrics views:mainViews]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[optionsContentView]|" options:0 metrics:metrics views:mainViews]];
