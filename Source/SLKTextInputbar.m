@@ -282,7 +282,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         _charCountLabel = [UILabel new];
         _charCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _charCountLabel.backgroundColor = [UIColor clearColor];
-        _charCountLabel.textAlignment = NSTextAlignmentRight;
+        _charCountLabel.textAlignment = NSTextAlignmentCenter;
         _charCountLabel.font = [UIFont systemFontOfSize:11.0];
         
         _charCountLabel.hidden = NO;
@@ -503,7 +503,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     
     // Constraints are different depending of the counter's position type
     if (counterPosition == SLKCounterPositionBottom) {
-        _charCountLabelVCs = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[charCountLabel]-(bottom)-[rightButton]" options:0 metrics:metrics views:views];
+        _charCountLabelVCs = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[charCountLabel]-4-[rightButton]" options:NSLayoutFormatAlignAllCenterX metrics:metrics views:views];
     }
     else {
         _charCountLabelVCs = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(top@750)-[charCountLabel]-(>=0)-|" options:0 metrics:metrics views:views];
