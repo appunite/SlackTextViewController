@@ -189,6 +189,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Deactivate automatic scrollView adjustment
      if (@available(iOS 11.0, *)) {
          self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+         self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
      }
 
     // Invalidates this flag when the view appears
