@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, SLKCounterPosition) {
 };
 
 /** @name A custom tool bar encapsulating messaging controls. */
-@interface SLKTextInputbar : UIToolbar
+@interface SLKTextInputbar : UIView
 
 @property (nonatomic, strong) UIView *contentView;;
 @property (nonatomic, strong, readonly) NSLayoutConstraint *contentViewHC;
