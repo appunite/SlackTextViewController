@@ -166,8 +166,23 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     self.automaticallyAdjustsScrollViewInsets = YES;
     self.extendedLayoutIncludesOpaqueBars = YES;
+    
+    
+    self.contentInset = UIEdgeInsetsZero;
 }
 
+- (void)setContentInset:(UIEdgeInsets)insets
+{
+    if (UIEdgeInsetsEqualToEdgeInsets(self.contentInset, insets)) {
+        return;
+    }
+    
+    _contentInset = insets;
+    
+    // Add new constraints
+    [self slk_updateViewConstraints];
+    [self.view layoutIfNeeded];
+}
 
 #pragma mark - View lifecycle
 
@@ -420,6 +435,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // requiring to adjust the text input bottom margin
     if (keyboardHeight < bottomMargin) {
         keyboardHeight = bottomMargin;
+    }
+    
+    if (keyboardHeight < _contentInset.bottom) {
+        keyboardHeight = _contentInset.bottom;
     }
     
     return keyboardHeight;
@@ -831,7 +850,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 }
 
 - (void)showPreviewView:(BOOL)showPreview {
-
+    
     //
     CGFloat viewHeight = showPreview ? [self heightForPreviewView] : 0.0;
     
@@ -850,7 +869,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // scroll
     if (self.isInverted) {
         [self.scrollViewProxy slk_scrollToTopAnimated:YES];
-
+        
     } else {
         [self.scrollViewProxy slk_scrollToBottomAnimated:YES];
     }
@@ -1010,7 +1029,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Skips this if it's not the expected textView.
     // Checking the keyboard height constant helps to disable the view constraints update on iPad when the keyboard is undocked.
     // Checking the keyboard status allows to keep the inputAccessoryView valid when still reacing the bottom of the screen.
-    if (![self.textView isFirstResponder] || (self.keyboardHC.constant == 0 && self.keyboardStatus == SLKKeyboardStatusDidHide)) {
+    if (![self.textView isFirstResponder] || ((self.keyboardHC.constant == 0 || self.keyboardHC.constant == self.contentInset.bottom) && self.keyboardStatus == SLKKeyboardStatusDidHide)) {
 #if SLKBottomPanningEnabled
         if ([gesture.view isEqual:self.scrollViewProxy]) {
             if (gestureVelocity.y > 0) {
@@ -1238,11 +1257,11 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_dismissTextInputbarIfNeeded
 {
-    if (self.keyboardHC.constant == 0) {
+    if (self.keyboardHC.constant == 0 || self.keyboardHC.constant == self.contentInset.bottom) {
         return;
     }
     
-    self.keyboardHC.constant = 0.0;
+    self.keyboardHC.constant = self.contentInset.bottom;
     self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
     
     [self slk_hideAutoCompletionViewIfNeeded];
@@ -2237,7 +2256,14 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                             @"textInputbar": self.textInputbar,
                             };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][preview(0@999)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(0)]-0-|" options:0 metrics:nil views:views]];
+    NSDictionary *metrics = @{
+                              @"top" : @(self.contentInset.top),
+                              @"bottom" : @(self.contentInset.bottom),
+                              @"left" : @(self.contentInset.left),
+                              @"right" : @(self.contentInset.right),
+                              };
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][preview(0@999)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(0)]-(bottom)-|" options:0 metrics:metrics views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[preview]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[autoCompletionView]|" options:0 metrics:nil views:views]];
