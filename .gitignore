@@ -17,6 +17,10 @@ DerivedData
 *.hmap
 .gutter.json
 
+# Swift Package Manager
+.build/
+.swiftpm/
+
 SlackTextViewController/Pods
 SlackTextViewController/Podfile.lock
 SlackTextViewController/*.xcworkspace
